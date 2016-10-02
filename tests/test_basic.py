@@ -8,7 +8,7 @@ import unittest
 class BasicTestSuite(unittest.TestCase):
     """Basic test cases."""
 
-    def test_absolute_truth_and_meaning(self):
+    def test_game(self):
         assert True
 
 
