@@ -7,10 +7,10 @@ class GameStyle(Enum):
 
 
 class MonopolyPieceStyle(Enum): 
-    dog = 1 
-    sheep = 2
-    car = 3
-    mobilephone = 4
+    dog = 0 
+    sheep = 1
+    car = 2
+    mobilephone = 3
 
 
 class MonopolySquareStyle(Enum):
@@ -133,18 +133,26 @@ Utilities
 class Game:
     '''Represents the game being played'''
     def __init__(self, gs, cntPlayers,):
+
+
         if gs not in (GameStyle.monopolyuk, ):
-            raise NotImplementedError("Only Monopoloy is supported currently")
+            raise NotImplementedError("Only Monopoly is supported currently")
         else:
             self._gameStyle = gs
             if cntPlayers > len(MonopolyPieceStyle):
-                raise NotImplementedError("Two many players for the number of available pieces")
+                raise NotImplementedError("Too many players for the number of available pieces")
             else:
                 self._playerCount = cntPlayers
+                
+            self._players = []
             self.__initializeMonopolyStyleGame()
 
+            for p in self._players:
+                print(p)
+
     def __initializeMonopolyStyleGame(self):
-        pass
+        for i in range(self._playerCount):
+            self._players.append(Player(MonopolyPieceStyle(i)))
 
 
 class Board:
@@ -155,12 +163,14 @@ class Board:
 
 class Player:
     '''Represents a player of the game'''
-    def __init__(self):
-        pass
+    def __init__(self, pieceStyle):
+        self._pieceStyle = pieceStyle
+    def __repr__(self):
+        return self._pieceStyle.name
 
 
 class Players:
-    '''Represents a player of the game'''
+    '''Represents all players of the game'''
     def __init__(self, cnt):
         pass
 
