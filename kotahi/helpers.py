@@ -153,6 +153,37 @@ class Game:
 
         self.next_player_idx = randint(0, cnt_players - 1) 
 
+    def board_health_check(self):
+
+        #Check Sides
+        for side in MonopolyPropertySquareSide:
+            cnt = 0
+            for square in self.board:
+                if square.square_side == side:
+                    cnt += 1
+
+            print ("Side {0} has {1} squares".format(side.name, cnt))
+
+        print("")
+        #Check Square Style
+        dicstylecnt = {}
+        for style in MonopolySquareStyle:
+            cnt = 0
+            for square in self.board:
+                if square.square_style == style:
+                    if style in dicstylecnt:
+                        dicstylecnt[style] += 1
+                    else:
+                        dicstylecnt[style] = 1
+
+        for k, v in dicstylecnt.items():
+            print ("Style {0} has {1} squares".format(k.name, v))
+
+        print("")
+
+
+
+
     def __build_board(self, board_style):
 
         dicProps = {}
@@ -200,7 +231,7 @@ class Game:
         dicProps['us'].append(Square('St Charles Place', Money(amount='20000.00', currency='USD'), MonopolySquareStyle.property, MonopolyPropertyStyle.pink, MonopolyPropertySquareSide.second))
 
         dicProps['uk'].append(Square('Electricity Company', Money(amount='150.00', currency='UKP'), MonopolySquareStyle.property, MonopolyPropertyStyle.utilities, MonopolyPropertySquareSide.second))
-        dicProps['uk'].append(Square('Electricity Company', Money(amount='20000.00', currency='USD'), MonopolySquareStyle.property, MonopolyPropertyStyle.utilities, MonopolyPropertySquareSide.second))
+        dicProps['us'].append(Square('Electricity Company', Money(amount='20000.00', currency='USD'), MonopolySquareStyle.property, MonopolyPropertyStyle.utilities, MonopolyPropertySquareSide.second))
 
         dicProps['uk'].append(Square('Whitehall', Money(amount='140.00', currency='UKP'), MonopolySquareStyle.property, MonopolyPropertyStyle.pink, MonopolyPropertySquareSide.second))
         dicProps['us'].append(Square('States Avenue', Money(amount='20000.00', currency='USD'), MonopolySquareStyle.property, MonopolyPropertyStyle.pink, MonopolyPropertySquareSide.second))
@@ -208,8 +239,8 @@ class Game:
         dicProps['uk'].append(Square('Northumberland Avenue', Money(amount='160.00', currency='UKP'), MonopolySquareStyle.property, MonopolyPropertyStyle.pink, MonopolyPropertySquareSide.second))
         dicProps['us'].append(Square('Virginia Avenue', Money(amount='20000.00', currency='USD'), MonopolySquareStyle.property, MonopolyPropertyStyle.pink, MonopolyPropertySquareSide.second))
 
-        dicProps['uk'].append(Square('Marylebone Station', Money(amount='200.00', currency='UKP'), MonopolySquareStyle.property, MonopolyPropertyStyle.transport, MonopolyPropertySquareSide.first))
-        dicProps['us'].append(Square('Pennsylvania Railroad', Money(amount='20000.00', currency='USD'), MonopolySquareStyle.property, MonopolyPropertyStyle.transport, MonopolyPropertySquareSide.first))
+        dicProps['uk'].append(Square('Marylebone Station', Money(amount='200.00', currency='UKP'), MonopolySquareStyle.property, MonopolyPropertyStyle.transport, MonopolyPropertySquareSide.second))
+        dicProps['us'].append(Square('Pennsylvania Railroad', Money(amount='20000.00', currency='USD'), MonopolySquareStyle.property, MonopolyPropertyStyle.transport, MonopolyPropertySquareSide.second))
 
         dicProps['uk'].append(Square('Bow Street', Money(amount='180.00', currency='UKP'), MonopolySquareStyle.property, MonopolyPropertyStyle.orange, MonopolyPropertySquareSide.second))
         dicProps['us'].append(Square('St James Place', Money(amount='20000.00', currency='USD'), MonopolySquareStyle.property, MonopolyPropertyStyle.orange, MonopolyPropertySquareSide.second))
@@ -288,13 +319,7 @@ class Game:
         dicProps['us'].append(Square('Boardwalk', Money(amount='20000.00', currency='USD'), MonopolySquareStyle.property, MonopolyPropertyStyle.darkblue, MonopolyPropertySquareSide.fourth))
 
 
-
-        self.board = dicProps[board_style.name]
-        import pprint
-        print("X")
-        print(board_style.name)
-        print("X")
-        pprint.pprint(self.board)
+        return dicProps[board_style.name]
 
 
     def throw_dice(self):
