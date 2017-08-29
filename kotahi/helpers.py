@@ -1,6 +1,9 @@
-from enum import Enum
-from money import Money
 from random import randint
+
+from enum import Enum
+
+from money import Money
+from tabulate import tabulate
 
 
 class GameStyle(Enum):
@@ -119,13 +122,14 @@ Utilities
 
 class Game:
     '''Represents the game being played'''
-    def __init__(self, gs, cnt_players,):
+    def __init__(self, gs, cnt_players, money_per_player, money_in_bank_at_start ):
 
 
         if gs not in (GameStyle.monopolyuk, ):
             raise NotImplementedError("Only Monopoly is supported currently")
         else:
             self._gameStyle = gs
+            self._money_in_bank = money_in_bank_at_start;
             if cnt_players > len(MonopolyPieceStyle):
                 raise NotImplementedError("Too many players for the number of available pieces")
             elif cnt_players < 2:
@@ -134,20 +138,24 @@ class Game:
                 self._player_count = cnt_players
                 
             self.lst_of_players = [] 
-            self.next_player_idx = None
+            self.__next_player_idx = None
             self.board = [] 
 
-            self.__initialize_monopoly_style_game(cnt_players, Money(amount='10000.00', currency='NZD'), MonopolyBoardStyle.uk)
+            self.__initialize_monopoly_style_game(  cnt_players, 
+                                                    MonopolyBoardStyle.uk,
+                                                    money_per_player 
+                                                    )
 
 
-    def __initialize_monopoly_style_game(self, cnt_players, starting_funds, board_style):
+    def __initialize_monopoly_style_game(self, cnt_players, board_style, money_per_player):
         self.board = self.__build_board(board_style)
 
         #Create as many players as we need 
         #allocating a piece to each
         for i in range(cnt_players):
             self.lst_of_players.append(Player(MonopolyPieceStyle(i), 
-                                starting_funds,
+                                money_per_player,
+                                len(self.board),
                                 MonopolyPropertySiteAcquistionStyle.random,
                                 MonopolyPropertyDevelopmentAcquistionStyle.random));
 
@@ -328,16 +336,41 @@ class Game:
 
         return {'dotcnt': dice1 + dice2, 'wasdouble' : (dice1 == dice2)}
 
-    def playaturn(self):
+    @property
+    def next_player_idx(self):
+        return self.__next_player_idx % len(self.lst_of_players)
+
+    @next_player_idx.setter
+    def next_player_idx(self, value):
+        self.__next_player_idx = value 
+
+    def play_a_turn(self):
         while (True):
+            print("")
+            print("Next player about to play is {0}".format(self.lst_of_players[self.next_player_idx]))
+            #Throw
             dic_dice_throw = self.throw_dice()
-            break
+            #Move the next player
+            self.lst_of_players[self.next_player_idx].move(dic_dice_throw['dotcnt'])
+            self.next_player_idx += 1
+            #Report status
+            if dic_dice_throw['wasdouble'] == False:
+                print("{0} was thrown".format(dic_dice_throw['dotcnt']))
+                self.reportStatus()
+                break
+            else:
+                print("Double was thrown - {0} was thrown".format(dic_dice_throw['dotcnt']))
+                self.reportStatus()
             
         
 
     def reportStatus(self):
+        lstHdrs = ['Name', 'Position', 'Funds']
+        lstData = []
         for p in self.lst_of_players:
-            print("{0} - ({1})".format(p.piece_style.name, p.funds))
+            lstData.append([p.piece_style.name, p.position_on_board, p.funds])
+
+        print(tabulate(lstData, lstHdrs, tablefmt="grid"))
 
 
 
@@ -349,14 +382,31 @@ class Board:
 
 class Player:
     '''Represents a player of the game'''
-    def __init__(self, pc_sty, funds, site_aq_style, prop_dev_style):
+    def __init__(self, pc_sty, funds, cnt_squares_on_board, site_aq_style, prop_dev_style):
         self.piece_style = pc_sty
         self.funds = funds
         self.site_aq_style = site_aq_style
         self.prop_dev_style = prop_dev_style
+        self.__cnt_squares_on_board = cnt_squares_on_board
+
+        self.__position_on_board = 0
             
     def __repr__(self):
-        return self.piece_style.name 
+        return("{0} at position {1}".format(self.piece_style.name , self.position_on_board))
+
+    @property
+    def position_on_board(self):
+        return self.__position_on_board % self.__cnt_squares_on_board 
+
+    @position_on_board.setter
+    def position_on_board(self, value):
+        self.__position_on_board = value 
+
+    def move(self, squares_to_move):
+        self.__position_on_board += squares_to_move
+        #self.position_on_board = self.__cnt_squares_on_board % self.position_on_board
+
+       
 
 
 class Players:

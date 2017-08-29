@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 
+from money import Money
 from helpers import Game, GameStyle
 
 
 def main():
-    g = Game(GameStyle.monopolyuk, 4)
+    g = Game(GameStyle.monopolyuk, 4, Money(amount='5000.00', currency='UKP'), Money(amount='100000.00', currency='UKP') )
 
     g.board_health_check()
 
     for i in range(10):
-        g.playaturn()
+        g.play_a_turn()
 
     g.reportStatus()
 
