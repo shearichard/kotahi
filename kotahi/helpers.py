@@ -169,6 +169,7 @@ class Game:
 
         self.next_player_idx = randint(0, cnt_players - 1) 
 
+                
     def board_health_check(self):
 
         #Check Sides
