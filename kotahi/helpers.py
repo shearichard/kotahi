@@ -7,6 +7,10 @@ from enum import Enum
 from money import Money
 from tabulate import tabulate
 
+CURRENCY = 'UKP'
+MONEYPERPLAYERSTART = Money(amount='5000.00', currency='UKP')
+MONEYBANKSTART = Money(amount='100000.00', currency='UKP') 
+MONEYZEROFUNDS = Money(amount='0.00', currency='UKP') 
 
 class GameStyle(Enum):
     monopolyuk = 1
@@ -523,7 +527,7 @@ class Player:
         owner = current_square.ownedby
         self.funds = self.funds - rent
         print("{0} about to pay rent, {1}, to {2}".format(self, rent, owner))
-        if self.funds < Money(amount='0.00', currency='UKP'):
+        if self.funds < MONEYZEROFUNDS: 
             raise Exception("{0} has too few funds with which to pay rent to {1}".format(self, owner))
         else:
             owner.funds = owner.funds + rent

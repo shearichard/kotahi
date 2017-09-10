@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from money import Money
-from helpers import Game, GameStyle
+from helpers import Game, GameStyle, MONEYPERPLAYERSTART, MONEYBANKSTART
 
 
 def main():
-    g = Game(GameStyle.monopolyuk, 4, Money(amount='5000.00', currency='UKP'), Money(amount='100000.00', currency='UKP') )
+    g = Game(GameStyle.monopolyuk, 4, MONEYPERPLAYERSTART, MONEYBANKSTART )
 
     g.board_health_check()
 
