@@ -445,12 +445,24 @@ class Game:
 
 
     def reportStatus(self):
-        lstHdrs = ['Name', 'Position', 'Funds']
+        lst_player_hdrs = ['Name', 'Position', 'Funds']
         lstData = []
         for p in self.lst_of_players:
             lstData.append([p.piece_style.name, p.position_on_board, p.funds])
 
-        print(tabulate(lstData, lstHdrs, tablefmt="grid"))
+        print(tabulate(lstData, lst_player_hdrs, tablefmt="grid"))
+        print("")
+        lst_squares = []
+        for sq in self.board:
+            owned_by = ""
+
+            if sq.ownedby != None:
+                owned_by = sq.ownedby.piece_style.name
+
+            lst_squares.append([sq.name, sq.property_style.name, owned_by])
+
+        lst_square_hdrs = ['Name', 'Style', 'Owner']
+        print(tabulate(lst_squares, lst_square_hdrs, tablefmt="grid"))
 
 
 
