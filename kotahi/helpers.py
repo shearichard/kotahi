@@ -1,4 +1,6 @@
 from random import randint
+from random import choice
+from decimal import * 
 
 from enum import Enum
 
@@ -129,7 +131,7 @@ class Game:
             raise NotImplementedError("Only Monopoly is supported currently")
         else:
             self._gameStyle = gs
-            self._money_in_bank = money_in_bank_at_start;
+
             if cnt_players > len(MonopolyPieceStyle):
                 raise NotImplementedError("Too many players for the number of available pieces")
             elif cnt_players < 2:
@@ -138,8 +140,10 @@ class Game:
                 self._player_count = cnt_players
                 
             self.lst_of_players = [] 
-            self.__next_player_idx = None
             self.board = [] 
+
+            self.__next_player_idx = None
+            self.__money_in_bank = money_in_bank_at_start;
 
             self.__initialize_monopoly_style_game(  cnt_players, 
                                                     MonopolyBoardStyle.uk,
@@ -337,6 +341,14 @@ class Game:
         return {'dotcnt': dice1 + dice2, 'wasdouble' : (dice1 == dice2)}
 
     @property
+    def money_in_bank(self):
+        return self.__money_in_bank
+
+    @money_in_bank.setter
+    def money_in_bank(self, value):
+        self.__money_in_bank = value 
+
+    @property
     def next_player_idx(self):
         return self.__next_player_idx % len(self.lst_of_players)
 
@@ -344,25 +356,89 @@ class Game:
     def next_player_idx(self, value):
         self.__next_player_idx = value 
 
+    @property
+    def current_square(self):
+        return self.board[self.current_player.position_on_board]
+
+    @property
+    def current_player(self):
+        return self.lst_of_players[self.next_player_idx]
+
+    def current_player_is_on_property_square(self, curr_player):
+        #current_square = self.board[curr_player.position_on_board]
+        return self.current_square.square_style == MonopolySquareStyle.property
+
+    def current_square_is_owned_by_someone_else(self, curr_player):
+        #current_square = self.board[curr_player.position_on_board]
+        #import pdb;pdb.set_trace()
+        if self.current_square.ownedby == None:
+            return False
+        else:
+            if self.current_square.ownedby == self:
+                return False
+            else:
+                return True
+
+            '''
+        TODO 
+        Either put a tag on each Square to say who owns it
+        ...or...
+        Put a list of Squares on each Player and add a Square
+        to that list when the Player buys it
+        '''
+
     def play_a_turn(self):
+        '''
+        TODO Check we're going through players property
+        '''
+        curr_player = self.lst_of_players[self.next_player_idx]
         while (True):
             print("")
-            print("Next player about to play is {0}".format(self.lst_of_players[self.next_player_idx]))
+            print("Next player about to play is {0} ".format(curr_player))
+
             #Throw
             dic_dice_throw = self.throw_dice()
             #Move the next player
-            self.lst_of_players[self.next_player_idx].move(dic_dice_throw['dotcnt'])
-            self.next_player_idx += 1
+            curr_player.move(dic_dice_throw['dotcnt'])
+            #
+            bln_diag_need_stop = False
+            if self.current_player_is_on_property_square(curr_player):
+                if self.current_square_is_owned_by_someone_else(curr_player):
+                    curr_player.pay_rent(self.board[curr_player.position_on_board])
+                    bln_diag_need_stop = True
+                else:
+                    #Potentially buy the property
+                    if curr_player.player_should_buy(self.board[curr_player.position_on_board]):
+                        print("{0} about to buy {1}".format(curr_player, self.board[curr_player.position_on_board]))
+                        self.currentplayer_buy_currentsquare()
+                        #bln_diag_need_stop = True
+
+
             #Report status
             if dic_dice_throw['wasdouble'] == False:
                 print("{0} was thrown".format(dic_dice_throw['dotcnt']))
+                self.next_player_idx += 1
                 self.reportStatus()
+                if bln_diag_need_stop:
+                    #import pdb;pdb.set_trace()
+                    pass
                 break
             else:
                 print("Double was thrown - {0} was thrown".format(dic_dice_throw['dotcnt']))
                 self.reportStatus()
-            
-        
+                if bln_diag_need_stop:
+                    #import pdb;pdb.set_trace()
+                    pass
+    
+
+    def currentplayer_buy_currentsquare(self):
+        #import pdb;pdb.set_trace()
+        curr_player = self.lst_of_players[self.next_player_idx]
+
+        self.money_in_bank += self.current_square.price
+        curr_player.funds -= self.current_square.price
+        self.current_square.ownedby = curr_player
+
 
     def reportStatus(self):
         lstHdrs = ['Name', 'Position', 'Funds']
@@ -404,10 +480,53 @@ class Player:
 
     def move(self, squares_to_move):
         self.__position_on_board += squares_to_move
-        #self.position_on_board = self.__cnt_squares_on_board % self.position_on_board
 
-       
+    def player_should_buy(self, current_square):
+        '''
+        The assumption here is that the current `Square` is
+        a 'Property' and is available to buy
+        '''
 
+        if self.site_aq_style == MonopolyPropertySiteAcquistionStyle.random:
+            return self.__player_should_buy_random(current_square)
+        else:
+            raise Exception("Only 'MonopolyPropertySiteAcquistionStyle.random' is supported in this version")
+
+
+
+    def __player_should_buy_random(self, current_square):
+        '''
+        The assumption here is that the current `Square` is
+        a 'Property' and is available to buy
+        '''
+        #Does the Player have the money to buy it ?
+        if self.funds > current_square.price:
+            #Throw a coin to determine if they should buy it
+            return choice([True, False])
+        else:
+            return False
+
+    def is_on_property_square(self, current_square):
+        pass
+
+    def must_pay_rent(self):
+        pass
+
+    def pay_rent(self, current_square):
+        '''
+        To start with (and to keep it simple) the rent is 20% 
+        of the price 
+        '''
+        #import pdb;pdb.set_trace()
+        getcontext().prec = 6
+        rent = current_square.price * Decimal(0.1)
+        owner = current_square.ownedby
+        self.funds = self.funds - rent
+        print("{0} about to pay rent, {1}, to {2}".format(self, rent, owner))
+        if self.funds < Money(amount='0.00', currency='UKP'):
+            raise Exception("{0} has too few funds with which to pay rent to {1}".format(self, owner))
+        else:
+            owner.funds = owner.funds + rent
 
 class Players:
     '''Represents all players of the game'''
@@ -433,6 +552,9 @@ class Square(Place):
         self.square_style = square_style 
         self.property_style = property_style 
         self.square_side = square_side 
+        self.mortaged = False
+        self.ownedby = None
+
 
     def __repr__(self):
         return "{0} - Price {1} ({2} / {3})".format(self.name, self.price, self.square_style.name, self.property_style.name)

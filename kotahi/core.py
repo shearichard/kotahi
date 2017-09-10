@@ -9,7 +9,7 @@ def main():
 
     g.board_health_check()
 
-    for i in range(10):
+    for i in range(500):
         g.play_a_turn()
 
     g.reportStatus()
