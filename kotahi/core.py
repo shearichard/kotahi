@@ -35,8 +35,8 @@ def main():
         print(path2dir)
         pth2file = os.path.join(path2dir, "%06d" % i + ".json")
         with open(pth2file, 'w', encoding='utf-8') as f:
-            frozen_game_board = jsonpickle.encode(g.board)
-            f.write(frozen_game_board)
+            frozen_game_json = jsonpickle.encode(g.make_freeze_ready_game_dic(i))
+            f.write(frozen_game_json)
 
     g.reportStatus()
     print(path2dir)

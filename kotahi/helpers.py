@@ -170,6 +170,32 @@ class Game:
         self.next_player_idx = randint(0, cnt_players - 1) 
 
                 
+    def make_freeze_ready_game_dic(self, turnid):
+        '''
+        Outputs a representation of the state
+        of the game in a form which lends itself
+        to later use elsewhere
+        '''
+        lstsquares = []
+        lstplayers = []
+        for player in self.lst_of_players:
+            lstplayers.append({
+                                'player': player.piece_style.name,
+                                'funds': player.funds.format(),
+                                'position': player.position_on_board
+                                })
+
+        for square in self.board:
+            pcstyle = "N/A"
+            if square.ownedby:
+                pcstyle = square.ownedby.piece_style.name
+
+            lstsquares.append({'ownedby': pcstyle, 'name': square.name})
+
+        return {'turnid': turnid, 
+                'boardstate': lstsquares,
+                'playerstate' : lstplayers}
+
     def board_health_check(self):
 
         #Check Sides
