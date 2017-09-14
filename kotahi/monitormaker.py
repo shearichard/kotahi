@@ -36,6 +36,7 @@ def getargs():
     parser = argparse.ArgumentParser(description='Parse directory of board game state files and outputs a JS data structure equivalent.')
     parser.add_argument('-i','--inputdir', help='Directory containing the input files', required=True)
     parser.add_argument('-o','--outputdir', help='Directory into which the output files should be written.', required=True)
+    parser.add_argument('-t','--template', help='Path to template file which forms basis of output.', required=True)
     args = vars(parser.parse_args())
 
     return args
@@ -52,6 +53,8 @@ def validateargs(args):
         raise PathError("The outputdir path does not exist")
     if os.path.exists(makeoutputpath(args)):
         raise PathError("The output file already exists")
+    if os.path.exists(args['template']) == False:
+        raise PathError("The template file does not exist")
 
 
 def processfiles(outputpath, inputdir):
