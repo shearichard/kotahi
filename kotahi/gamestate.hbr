@@ -10,27 +10,30 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <style type="text/css">
         /* Some custom styles to beautify this example */
-        .HOLDdemo-content{
+        .HOLDdemo-content{{
             padding: 15px;
             font-size: 18px;
             min-height: 300px;
             background: #dbdfe5;
             margin-bottom: 10px;
-        }
-        .demo-content{
-            padding: 15px;
+        }}
+        .HOLD2demo-content{{
+            margin: 5px;
+            padding: 5px;
+            border-width: 1px;
             font-size: 18px;
             background: #dbdfe5;
-        }
-        .demo-content.bg-alt{
+        }}
+        .demo-content.bg-alt{{
             background: #abb1b8;
-        }
+        }}
     </style>
     <title>Gamestate</title>
 </head>
 <body>
     <!-- Open the output in a new blank tab (Click the arrow next to "Show Output" button) and resize the browser window to understand how the Bootstrap responsive grid system works. -->
     <div class="container">
+        {testrow}
         <!--Row with three equal columns-->
         <div class="row">
             <div class="col-md-1">
