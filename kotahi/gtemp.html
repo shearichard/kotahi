@@ -36,7 +36,25 @@
     <div>V0</div>
 
     <canvas id="c" width="1600" height="500"></canvas>
+    <br>
+    <canvas id="cc" width="1600" height="500"></canvas>
 
+    <script>
+        // create a wrapper around native canvas element (with id="c")
+        var canvas = new fabric.Canvas('cc');
+
+        // create a rectangle object
+        var rect = new fabric.Rect({
+          left: 100,
+          top: 100,
+          fill: 'red',
+          width: 20,
+          height: 20
+        });
+
+        // "add" rectangle onto canvas
+        canvas.add(rect);
+    </script>
     <script id="main">(function() {
         var canvas = this.__canvas = new fabric.StaticCanvas('c');
 
