@@ -42,7 +42,7 @@
 </head>
 <body>
     <div id='container'>
-    <div>V2</div>
+    <div>V3</div>
     <hr/>
     <div id="chart"></div>
     <hr/>
@@ -64,8 +64,6 @@
 
 
 
-    <canvas id="boardrepresentatoin" width="1600" height="500"></canvas>
-    <br>
     <canvas id="playerfundschart" width="1000" height="1200"></canvas>
 
     <script>
@@ -97,27 +95,6 @@
             }
         }
     </script>
-    <script id="main">(function() {
-        var canvas = this.__canvas = new fabric.StaticCanvas('boardrepresentatoin');
-
-        canvas.add(
-            new fabric.Rect({ top: 100, left: 100, width: 50, height: 50, fill: '#f55' }),
-            new fabric.Rect({ top: 140, left: 400, width: 50, height: 50, fill: '#f55' }),
-            new fabric.Circle({ top: 140, left: 230, radius: 75, fill: 'green' }),
-            new fabric.Triangle({ top: 300, left: 210, width: 100, height: 100, fill: 'blue' })
-        );
-
-        function animate() {
-            canvas.item(1).animate('top', canvas.item(1).get('top') === 500 ? '100' : '500', {
-                duration: 1000,
-                onChange: canvas.renderAll.bind(canvas),
-                onComplete: animate
-            });
-          }
-        animate();
-    })();
-    </script>
-
 
 
     <!-- Open the output in a new blank tab (Click the arrow next to "Show Output" button) and resize the browser window to understand how the Bootstrap responsive grid system works. -->
