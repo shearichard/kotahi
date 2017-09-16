@@ -37,23 +37,36 @@
 
     <canvas id="c" width="1600" height="500"></canvas>
     <br>
-    <canvas id="cc" width="1600" height="500"></canvas>
+    <canvas id="cc" width="1000" height="1200"></canvas>
 
     <script>
+        XSTEP = 85;
+        YSTEP = 85;
+        XWIDTH = 80;
+        YWIDTH = 80;
+        ROWCOUNT = 10;
+        COLCOUNT = 10;
+        SQUAREFILLCOLOUR = 'lightslategray';
+        CANVASFILLCOLOUR = 'whitesmoke';
         // create a wrapper around native canvas element (with id="c")
-        var canvas = new fabric.Canvas('cc');
-
+        var canvas = new fabric.Canvas('cc',{backgroundColor : CANVASFILLCOLOUR});
         // create a rectangle object
-        var rect = new fabric.Rect({
-          left: 100,
-          top: 100,
-          fill: 'red',
-          width: 20,
-          height: 20
-        });
-
-        // "add" rectangle onto canvas
-        canvas.add(rect);
+        arrRect = [];
+        for (var j = 0; j < ROWCOUNT; j++) {
+            for (var i = 0; i < COLCOUNT; i++) {
+                if ((j == 0) | (i == 0) | (j == (ROWCOUNT - 1)) | (i == (COLCOUNT - 1)))
+                {
+                    var rect = new fabric.Rect({
+                        left: XSTEP * (i + 1) ,
+                        top: YSTEP * (j + 1),
+                        fill: SQUAREFILLCOLOUR,
+                        width: XWIDTH,
+                        height: YWIDTH
+                    });
+                    canvas.add(rect);
+                }
+            }
+        }
     </script>
     <script id="main">(function() {
         var canvas = this.__canvas = new fabric.StaticCanvas('c');
