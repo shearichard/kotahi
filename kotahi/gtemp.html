@@ -42,7 +42,7 @@
 </head>
 <body>
     <div id='container'>
-    <div>V1</div>
+    <div>V2</div>
     <hr/>
     <div id="chart"></div>
     <hr/>
@@ -64,9 +64,9 @@
 
 
 
-    <canvas id="c" width="1600" height="500"></canvas>
+    <canvas id="boardrepresentatoin" width="1600" height="500"></canvas>
     <br>
-    <canvas id="cc" width="1000" height="1200"></canvas>
+    <canvas id="playerfundschart" width="1000" height="1200"></canvas>
 
     <script>
         XSTEP = 85;
@@ -78,7 +78,7 @@
         SQUAREFILLCOLOUR = 'lightslategray';
         CANVASFILLCOLOUR = 'whitesmoke';
         // create a wrapper around native canvas element (with id="c")
-        var canvas = new fabric.Canvas('cc',{backgroundColor : CANVASFILLCOLOUR});
+        var canvas = new fabric.Canvas('playerfundschart',{backgroundColor : CANVASFILLCOLOUR});
         // create a rectangle object
         arrRect = [];
         for (var j = 0; j < ROWCOUNT; j++) {
@@ -98,7 +98,7 @@
         }
     </script>
     <script id="main">(function() {
-        var canvas = this.__canvas = new fabric.StaticCanvas('c');
+        var canvas = this.__canvas = new fabric.StaticCanvas('boardrepresentatoin');
 
         canvas.add(
             new fabric.Rect({ top: 100, left: 100, width: 50, height: 50, fill: '#f55' }),
