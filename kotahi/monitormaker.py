@@ -9,6 +9,7 @@ equivalent to the contents of the files
 '''
 
 import os
+import shutil
 import pprint
 import argparse
 import glob
@@ -16,6 +17,7 @@ import jsonpickle
 
 from pybars import Compiler
 
+STATIC_JS_FILENAME = "gamestate-static.js"
 OUTPUT_JS_FILENAME = "gamestate.js"
 OUTPUT_HTML_FILENAME = "gamestate.html"
 HTML_TEMPLATE_FILENAME = "gamestate.hbr"
@@ -45,6 +47,9 @@ def getargs():
 
     return args
 
+
+def make_path_to_js_static_output(args):
+    return os.path.join(args['outputdir'], STATIC_JS_FILENAME)
 
 def make_path_to_js_output(args):
     return os.path.join(args['outputdir'], OUTPUT_JS_FILENAME)
@@ -77,6 +82,7 @@ def validateargs(args):
 def processfiles(   path_to_output_js, 
                     path_to_output_html, 
                     path_to_html_template, 
+                    path_to_output_static_js,
                     inputdir):
 
     strout = ""
@@ -92,11 +98,16 @@ def processfiles(   path_to_output_js,
         lstout.append('''</div>''')
     strout = ''.join(lstout)
 
+    #Copy the static JS to whereever the output file is going so that
+    #it can be served easily to the requesting HTML page
+    shutil.copyfile(os.path.join('.', STATIC_JS_FILENAME), path_to_output_static_js) 
+
     #Build HTML file corresponding to game squares etc
     with open(path_to_html_template, 'r', encoding='utf-8') as ftemplate:
         template = ftemplate.read()
         with open(path_to_output_html, 'w', encoding='utf-8') as fhtmlout:
             fhtmlout.write(template.format(testrow=strout))
+            #fhtmlout.write(template)
             
 
     #Build JS structure
@@ -114,6 +125,7 @@ def main():
     processfiles(   make_path_to_js_output(dargs), 
                     make_path_to_html_output(dargs),
                     make_path_to_html_template(dargs),
+                    make_path_to_js_static_output(dargs),
                     dargs['inputdir'])
 
 
