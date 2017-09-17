@@ -45,90 +45,36 @@
     <title>Gamestate</title>
 </head>
 <body>
-    <div id='container'>
-    <div>V3</div>
-    <hr/>
-    <div id="chart"></div>
-    <hr/>
-
-    <script>
-        //This is where the chart code used to be
-    </script>
-
-    <canvas id="playerfundschart" width="1000" height="1200"></canvas>
-
-    <script>
-        //This is where the board build code used to be
-    </script>
-
-
-    <!-- Open the output in a new blank tab (Click the arrow next to "Show Output" button) and resize the browser window to understand how the Bootstrap responsive grid system works. -->
-    <div class="container">
-        {testrow}
-        <!--Row with three equal columns-->
+    <div class='container'>
         <div class="row">
-            <div class="col-md-1">
-                <div class="demo-content">Go</div>
-            </div>
-            <div class="col-md-1">
-                <div class="demo-content">2</div>
-            </div>
-            <div class="col-md-1">
-                <div class="demo-content">3</div>
-            </div>
-            <div class="col-md-1">
-                <div class="demo-content">4</div>
-            </div>
-            <div class="col-md-1">
-                <div class="demo-content">5</div>
-            </div>
-            <div class="col-md-1">
-                <div class="demo-content">6</div>
-            </div>
-            <div class="col-md-1">
-                <div class="demo-content">7</div>
-            </div>
-            <div class="col-md-1">
-                <div class="demo-content">8</div>
-            </div>
-            <div class="col-md-1">
-                <div class="demo-content">9</div>
-            </div>
-            <div class="col-md-1">
-                <div class="demo-content">10</div>
-            </div>
-            <div class="col-md-1">
-                <div class="demo-content">11</div>
-            </div>
-            <div class="col-md-1">
-                <div class="demo-content">12</div>
-            </div>
+            <div>V4</div>
         </div>
-        <hr>
-        <!--Row with three columns divided in 1:4:1 ratio-->
         <div class="row">
-            <div class="col-md-2">
-                <div class="demo-content">.col-md-2</div>
-            </div>
-            <div class="col-md-8">
-                <div class="demo-content bg-alt">.col-md-8</div>
-            </div>
-            <div class="col-md-2">
-                <div class="demo-content">.col-md-2</div>
-            </div>
+            <!-- Test of counter incrementation START -->
+            <h2 id="countervalue"></h2>
+            <!-- Test of counter incrementation STOP -->
         </div>
-        <hr>
-        <!--Row with three columns divided unevenly-->
+
         <div class="row">
-            <div class="col-md-3">
-                <div class="demo-content">.col-md-3</div>
-            </div>
-            <div class="col-md-7">
-                <div class="demo-content bg-alt">.col-md-7</div>
-            </div>
-            <div class="col-md-2">
-                <div class="demo-content">.col-md-2</div>
-            </div>
+            <div id="chart"></div>
+        </div>
+
+        <script>
+            //This is where the chart code used to be
+        </script>
+
+        <div class="row">
+            <canvas id="playerfundschart" width="1000" height="1200"></canvas>
+        </div>
+
+        <script>
+            //This is where the board build code used to be
+        </script>
+
+
+        <!-- Open the output in a new blank tab (Click the arrow next to "Show Output" button) and resize the browser window to understand how the Bootstrap responsive grid system works. -->
+        <div class="row">
+            {testrow}
         </div>
     </div>
     

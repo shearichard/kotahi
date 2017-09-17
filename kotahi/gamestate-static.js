@@ -9,12 +9,13 @@ TCG.MON = function () {
     _buildData = function () {
         //Extract the data which was written into gamestate.js
         console.log("buildData");
-        debugger;
         return TCG.MDA.buildDataStructure();
     }
     return {
       //PUBLIC AREA
       boardstates : null,
+      boardidx : 0,
+      intHandle : null, 
       pageElementsInitialization : function () {
         //
         var chart = c3.generate({
@@ -58,10 +59,25 @@ TCG.MON = function () {
         }
         //
         TCG.MON.boardstates = _buildData();
+        TCG.MON.counterInitialization();
     },
+    reflectPerTurnChangeOfStatus: function () {
+      return function(){
+        if (TCG.MON.boardidx >= 22)
+        {
+         clearInterval(TCG.MON.intHandle)
+        }
+        $("#countervalue").html(TCG.MON.boardidx);
+        TCG.MON.boardidx += 1;
+        console.log(TCG.MON.boardidx);
+      };
+    },
+    counterInitialization: function () {
+      TCG.MON.boardidx = 0;
+      TCG.MON.intHandle = setInterval(TCG.MON.reflectPerTurnChangeOfStatus(), 200);
+    }    
   };
 }();
 $(document).ready(function () { 
     TCG.MON.pageElementsInitialization();
-    debugger;
 });

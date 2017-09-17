@@ -190,7 +190,7 @@ class Game:
             if square.ownedby:
                 pcstyle = square.ownedby.piece_style.name
 
-            lstsquares.append({'ownedby': pcstyle, 'name': square.name})
+            lstsquares.append({'ownedby': pcstyle, 'name': square.name, 'price': square.price.format()})
 
         return {'turnid': turnid, 
                 'boardstate': lstsquares,
