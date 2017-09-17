@@ -11,26 +11,56 @@ TCG.MON = function () {
         console.log("buildData");
         return TCG.MDA.buildDataStructure();
     }
+    _buildChart = function () {
+      var chartData = TCG.MON.buildChartData();
+      TCG.MON.playerFundsChart = c3.generate({
+          data: {
+              columns: chartData 
+          },
+          size: {
+              width: 600 
+          },
+        });
+        TCG.MON.playerFundsChart.data.columns = chartData; 
+    }
     return {
       //PUBLIC AREA
       boardstates : null,
       boardidx : 0,
       intHandle : null, 
       playerFundsChart : null,
+
+      buildChartData : function () {
+                var outval = [
+                    ['player1', 150, 200, 250, 400, 150, 250,null ,null ,null ],
+                    ['player2', 150, 200, 250, 40, 15, 25, null, null,null ]
+                ]
+                return outval
+      },
+      buildChartDatav0 : function () {
+                var outval = [
+                    ['player1', 150, 200, 250, 400, 150, 250,null ,null ,null ],
+                    ['player2', 150, 200, 250, 40, 15, 25, null, null,null ]
+                ]
+                return outval
+      },
       pageElementsInitialization : function () {
         //
-        //var chart = c3.generate({
-        TCG.MON.playerFundsChart = c3.generate({
-            data: {
+        TCG.MON.boardstates = _buildData();
+        //
+        _buildChart();
+        //
+        /*
                 columns: [
                     ['player1', 350, 200, 100, 400, 150, 250,null ,null ,null ],
                     ['player2', 350, 20, 10, 40, 15, 25, null, null,null ]
                 ]
+        */                
+        /*
+            data: {
+                columns: TCG.MON.buildChartData
             },
-            size: {
-                width: 600 
-            },
-        });
+         */
         //
         XSTEP = 85;
         YSTEP = 85;
@@ -60,12 +90,11 @@ TCG.MON = function () {
             }
         }
         //
-        TCG.MON.boardstates = _buildData();
         TCG.MON.counterInitialization();
     },
     reflectPerTurnChangeOfStatus: function () {
       return function(){
-        if (TCG.MON.boardidx >= 22)
+        if (TCG.MON.boardidx >= 12)
         {
          clearInterval(TCG.MON.intHandle)
         }
