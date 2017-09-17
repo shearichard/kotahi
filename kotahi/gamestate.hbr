@@ -47,7 +47,7 @@
 <body>
     <div class='container'>
         <div class="row">
-            <div>V4</div>
+            <div>V5</div>
         </div>
         <div class="row">
             <!-- Test of counter incrementation START -->

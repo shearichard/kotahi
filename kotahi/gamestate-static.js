@@ -16,9 +16,11 @@ TCG.MON = function () {
       boardstates : null,
       boardidx : 0,
       intHandle : null, 
+      playerFundsChart : null,
       pageElementsInitialization : function () {
         //
-        var chart = c3.generate({
+        //var chart = c3.generate({
+        TCG.MON.playerFundsChart = c3.generate({
             data: {
                 columns: [
                     ['player1', 350, 200, 100, 400, 150, 250,null ,null ,null ],
@@ -69,7 +71,7 @@ TCG.MON = function () {
         }
         $("#countervalue").html(TCG.MON.boardidx);
         TCG.MON.boardidx += 1;
-        console.log(TCG.MON.boardidx);
+        console.log(TCG.MON.boardstates[TCG.MON.boardidx].boardstate[1].ownedby);
       };
     },
     counterInitialization: function () {
