@@ -21,6 +21,25 @@ STATIC_JS_FILENAME = "gamestate-static.js"
 OUTPUT_JS_FILENAME = "gamestate.js"
 OUTPUT_HTML_FILENAME = "gamestate.html"
 HTML_TEMPLATE_FILENAME = "gamestate.hbr"
+DYNAMIC_JS_TOP = '''
+var TCG = TCG || function () { };
+TCG.MDA = function () {
+    foo = function () {
+      //
+    }
+    bar = function() {
+      //
+    }
+    return {
+        //PUBLIC AREA
+        buildDataStructure : function () {
+'''
+DYNAMIC_JS_BOTTOM = '''
+            return o;
+        },
+    };
+}();
+'''
 
 class Error(Exception):
     """Base class for exceptions in this module."""
@@ -112,11 +131,14 @@ def processfiles(   path_to_output_js,
 
     #Build JS structure
     with open(path_to_output_js, 'w', encoding='utf-8') as fout:
+
+        fout.write(DYNAMIC_JS_TOP)
         fout.write('o={}\n')
         for p in lstpath:
             with open(p, 'r', encoding='utf-8') as fin:
                 thawed = jsonpickle.decode(fin.read())
                 fout.write("o[{0}]={1};\n\n".format(thawed['turnid'], pprint.pformat(thawed)))
+        fout.write(DYNAMIC_JS_BOTTOM)
 
 def main():
     dargs = getargs()
