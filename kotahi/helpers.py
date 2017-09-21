@@ -181,7 +181,7 @@ class Game:
         for player in self.lst_of_players:
             lstplayers.append({
                                 'player': player.piece_style.name,
-                                'funds': player.funds.format(),
+                                'funds': player.funds.format('en_UK', '###0.00'),
                                 'position': player.position_on_board
                                 })
 
@@ -190,7 +190,7 @@ class Game:
             if square.ownedby:
                 pcstyle = square.ownedby.piece_style.name
 
-            lstsquares.append({'ownedby': pcstyle, 'name': square.name, 'price': square.price.format()})
+            lstsquares.append({'ownedby': pcstyle, 'name': square.name, 'price': square.price.format('en_UK', '###0.00')})
 
         return {'turnid': turnid, 
                 'boardstate': lstsquares,

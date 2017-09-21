@@ -1,14 +1,14 @@
 var TCG = TCG || function () { };
 TCG.MON = function () {
-    foo = function () {
-      //
-    }
-    bar = function() {
-      //
+    _countStates = function () {
+      var cnt = 0;
+      $.each(TCG.MON.boardstates, function (idxboardstate, valboardstate) {
+        cnt++;
+      });
+      return cnt;
     }
     _buildData = function () {
         //Extract the data which was written into gamestate.js
-        console.log("buildData");
         return TCG.MDA.buildDataStructure();
     }
     _buildChart = function () {
@@ -26,16 +26,63 @@ TCG.MON = function () {
     return {
       //PUBLIC AREA
       boardstates : null,
+      boardstateslength : null,
       boardidx : 0,
       intHandle : null, 
       playerFundsChart : null,
 
       buildChartData : function () {
-                var outval = [
-                    ['player1', 150, 200, 250, 400, 150, 250,null ,null ,null ],
-                    ['player2', 150, 200, 250, 40, 15, 25, null, null,null ]
-                ]
-                return outval
+        /*
+        TO DO
+        Have to decide how to rebuild the array for each of the states.
+        Could just iterate over the input data and start ignoring the values
+        after the current index (instead putting into place null)        
+        +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+        //We're looking to build something that looks like this . 
+        //
+        //var outval = [
+        //    ['player1', 150, 200, 250, 400, 150, 250, null, null, null ],
+        //    ['player2', 150, 200, 250, 40, 15, 25, null, null, null ]
+        //]
+        //
+        //Here we have only two players but in reality we would have as many 
+        //players as there was in the input data. Each player would have as many 
+        //values as there are turns. 
+        //
+        //For the first turn all but one values would be null and only
+        //the first value would a 'real' value. For the second turn the first two values
+        //would be a 'real' value and all the others null and so on. In this way we
+        //will have a fixed width graph on which the recorded values 'grow'
+        var outval = [];
+        var innerval = null; 
+        var currentPlayer = null;
+        var FIRSTSTATE = 0;
+        //Iterate over first state to get the players involved
+        $.each(TCG.MON.boardstates[FIRSTSTATE].playerstate, function (idxfirstateplyr, valfirststateplyr) {
+          currentPlayer = valfirststateplyr.player;
+          innerval = [];
+          innerval.push(currentPlayer);
+          //Iterate over each of the board states
+          $.each(TCG.MON.boardstates, function (idxboardstate, valboardstate) {
+            //Iterate over each of the players within this state looking
+            //for the current player
+            $.each(valboardstate.playerstate, function (idxstateplayer, valstateplayer) {
+              if (valstateplayer.player == currentPlayer){
+                if (idxboardstate <= TCG.MON.boardidx)
+                {
+                  innerval.push(valstateplayer.funds);
+                }
+                else
+                {
+                  innerval.push(0);
+                }
+              }
+            });
+          });
+          outval.push(innerval);
+        });
+        return outval
       },
       buildChartDatav0 : function () {
                 var outval = [
@@ -47,6 +94,8 @@ TCG.MON = function () {
       pageElementsInitialization : function () {
         //
         TCG.MON.boardstates = _buildData();
+        TCG.MON.boardstateslength = _countStates();
+
         //
         _buildChart();
         //
@@ -94,13 +143,16 @@ TCG.MON = function () {
     },
     reflectPerTurnChangeOfStatus: function () {
       return function(){
-        if (TCG.MON.boardidx >= 12)
+        if (TCG.MON.boardidx >= TCG.MON.boardstateslength)
         {
-         clearInterval(TCG.MON.intHandle)
+          clearInterval(TCG.MON.intHandle)
         }
-        $("#countervalue").html(TCG.MON.boardidx);
-        TCG.MON.boardidx += 1;
-        console.log(TCG.MON.boardstates[TCG.MON.boardidx].boardstate[1].ownedby);
+        else
+        {
+          $("#countervalue").html(TCG.MON.boardidx);
+          _buildChart();
+          TCG.MON.boardidx += 1;
+        }
       };
     },
     counterInitialization: function () {
