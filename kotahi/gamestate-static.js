@@ -11,8 +11,40 @@ TCG.MON = function () {
         //Extract the data which was written into gamestate.js
         return TCG.MDA.buildDataStructure();
     }
-    _buildChart = function () {
-      var chartData = TCG.MON.buildChartData();
+    _buildBoard = function () {
+        XSTEP = 85;
+        YSTEP = 85;
+        XWIDTH = 80;
+        YWIDTH = 80;
+        ROWCOUNT = 10;
+        COLCOUNT = 10;
+        SQUAREFILLCOLOUR = 'lightslategray';
+        CANVASFILLCOLOUR = 'whitesmoke';
+        // create a wrapper around native canvas element (with id="c")
+        var canvas = new fabric.Canvas('playerfundschart',{backgroundColor : CANVASFILLCOLOUR});
+        // create a rectangle object
+        arrRect = [];
+        for (var j = 0; j < ROWCOUNT; j++) {
+            for (var i = 0; i < COLCOUNT; i++) {
+                if ((j == 0) | (i == 0) | (j == (ROWCOUNT - 1)) | (i == (COLCOUNT - 1)))
+                {
+                    var rect = new fabric.Rect({
+                        left: XSTEP * (i + 1) ,
+                        top: YSTEP * (j + 1),
+                        fill: SQUAREFILLCOLOUR,
+                        width: XWIDTH,
+                        height: YWIDTH
+                    });
+                    canvas.add(rect);
+                }
+            }
+        }
+    }
+    _buildPropertyHoldingsChart = function () {
+      var chartData = TCG.MON.buildPlayerPropertyHoldingsChartData();
+    }
+    _buildFundsChart = function () {
+      var chartData = TCG.MON.buildPlayerFundsChartData();
       TCG.MON.playerFundsChart = c3.generate({
           data: {
               columns: chartData 
@@ -31,14 +63,45 @@ TCG.MON = function () {
       intHandle : null, 
       playerFundsChart : null,
 
-      buildChartData : function () {
-        /*
-        TO DO
-        Have to decide how to rebuild the array for each of the states.
-        Could just iterate over the input data and start ignoring the values
-        after the current index (instead putting into place null)        
-        +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-
+      buildPlayerPropertyHoldingsChartData : function () {
+        var outval = [];
+        var innerval = null; 
+        var currentPlayer = null;
+        var FIRSTSTATE = 0;
+        var arrPlayers = [];
+        var objPlayerPropHistory = {};
+        //Iterate over first state to get the players involved
+        $.each(TCG.MON.boardstates[FIRSTSTATE].playerstate, function (idxfirstateplyr, valfirststateplyr) {
+          arrPlayers.push(valfirststateplyr.player);
+          objPlayerPropHistory[valfirststateplyr.player] = [];
+        });
+        //Iterate over each of the players
+        $.each(arrPlayers, function (idxplayer, valplayer) {
+          //Iterate over each of the boardstates
+          $.each(TCG.MON.boardstates, function (idxboardstate, valboardstate) {
+            if (idxboardstate <= TCG.MON.boardidx)
+            {
+              //Accumulate property value owned by current 
+              //player in current board state
+              //TODO Need to initialize within the array rather tahn directly to objPlayer[valplayer]
+              //TODO Also need to accumulate values within the array rather than overwriting on every
+              //TODO loop
+              //objPlayers[valplayer] = ;
+              var propvaltot = 0;
+              $.each(valboardstate.boardstate, function (idxsquare, valsquare) {
+                if (valsquare.ownedby == valplayer){
+                  propvaltot += parseInt(valsquare.price);
+                }
+              });
+              objPlayerPropHistory[valplayer].push(propvaltot)
+            }else{
+              objPlayerPropHistory[valplayer].push(0)
+            }
+          });
+        });
+        return objPlayerPropHistory
+      },
+      buildPlayerFundsChartData : function () {
         //We're looking to build something that looks like this . 
         //
         //var outval = [
@@ -92,53 +155,11 @@ TCG.MON = function () {
                 return outval
       },
       pageElementsInitialization : function () {
-        //
         TCG.MON.boardstates = _buildData();
         TCG.MON.boardstateslength = _countStates();
-
-        //
-        _buildChart();
-        //
-        /*
-                columns: [
-                    ['player1', 350, 200, 100, 400, 150, 250,null ,null ,null ],
-                    ['player2', 350, 20, 10, 40, 15, 25, null, null,null ]
-                ]
-        */                
-        /*
-            data: {
-                columns: TCG.MON.buildChartData
-            },
-         */
-        //
-        XSTEP = 85;
-        YSTEP = 85;
-        XWIDTH = 80;
-        YWIDTH = 80;
-        ROWCOUNT = 10;
-        COLCOUNT = 10;
-        SQUAREFILLCOLOUR = 'lightslategray';
-        CANVASFILLCOLOUR = 'whitesmoke';
-        // create a wrapper around native canvas element (with id="c")
-        var canvas = new fabric.Canvas('playerfundschart',{backgroundColor : CANVASFILLCOLOUR});
-        // create a rectangle object
-        arrRect = [];
-        for (var j = 0; j < ROWCOUNT; j++) {
-            for (var i = 0; i < COLCOUNT; i++) {
-                if ((j == 0) | (i == 0) | (j == (ROWCOUNT - 1)) | (i == (COLCOUNT - 1)))
-                {
-                    var rect = new fabric.Rect({
-                        left: XSTEP * (i + 1) ,
-                        top: YSTEP * (j + 1),
-                        fill: SQUAREFILLCOLOUR,
-                        width: XWIDTH,
-                        height: YWIDTH
-                    });
-                    canvas.add(rect);
-                }
-            }
-        }
-        //
+        _buildFundsChart();
+        _buildPropertyHoldingsChart();
+        _buildBoard();
         TCG.MON.counterInitialization();
     },
     reflectPerTurnChangeOfStatus: function () {
@@ -150,7 +171,8 @@ TCG.MON = function () {
         else
         {
           $("#countervalue").html(TCG.MON.boardidx);
-          _buildChart();
+          _buildFundsChart();
+          _buildPropertyHoldingsChart();
           TCG.MON.boardidx += 1;
         }
       };
