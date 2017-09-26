@@ -21,7 +21,7 @@ TCG.MON = function () {
         SQUAREFILLCOLOUR = 'lightslategray';
         CANVASFILLCOLOUR = 'whitesmoke';
         // create a wrapper around native canvas element (with id="c")
-        var canvas = new fabric.Canvas('playerfundschart',{backgroundColor : CANVASFILLCOLOUR});
+        var canvas = new fabric.Canvas('boardfacsimile',{backgroundColor : CANVASFILLCOLOUR});
         // create a rectangle object
         arrRect = [];
         for (var j = 0; j < ROWCOUNT; j++) {
@@ -42,16 +42,59 @@ TCG.MON = function () {
     }
     _buildPropertyHoldingsChart = function () {
       var chartData = TCG.MON.buildPlayerPropertyHoldingsChartData();
+      TCG.MON.playerPropHldngChart = c3.generate({
+          title: {
+            text: 'Property Holdings'
+          },
+          data: {
+              columns: chartData 
+          },
+          axis: {
+            y: {
+              max: 5000,
+              min: 0,
+              label: {
+                text: 'Value of Property',
+                position: 'outer-middle'
+              }
+            },
+            x: {
+              label: {
+                text: 'Turns',
+                position: 'outer-center'
+              }
+            },
+          },
+          bindto: '#chartplayerproperty'
+        });
+        TCG.MON.playerPropHldngChart.data.columns = chartData; 
     }
     _buildFundsChart = function () {
       var chartData = TCG.MON.buildPlayerFundsChartData();
       TCG.MON.playerFundsChart = c3.generate({
+          title: {
+            text: 'Player Funds'
+          },
           data: {
               columns: chartData 
           },
-          size: {
-              width: 600 
+          axis: {
+            y: {
+              max: 5000,
+              min: 0,
+              label: {
+                text: 'Cash on Hand',
+                position: 'outer-middle'
+              }
+            },
+            x: {
+              label: {
+                text: 'Turns',
+                position: 'outer-center'
+              }
+            },
           },
+          bindto: '#chartplayerfunds'
         });
         TCG.MON.playerFundsChart.data.columns = chartData; 
     }
@@ -62,14 +105,16 @@ TCG.MON = function () {
       boardidx : 0,
       intHandle : null, 
       playerFundsChart : null,
+      playerPropHldngChart : null,
 
       buildPlayerPropertyHoldingsChartData : function () {
         var outval = [];
         var innerval = null; 
         var currentPlayer = null;
         var FIRSTSTATE = 0;
-        var arrPlayers = [];
+        var arrPlayerPropHistory = [];
         var objPlayerPropHistory = {};
+        var arrPlayers = [];
         //Iterate over first state to get the players involved
         $.each(TCG.MON.boardstates[FIRSTSTATE].playerstate, function (idxfirstateplyr, valfirststateplyr) {
           arrPlayers.push(valfirststateplyr.player);
@@ -99,7 +144,12 @@ TCG.MON = function () {
             }
           });
         });
-        return objPlayerPropHistory
+        $.each(arrPlayers, function (idxplayer, valplayer) {
+          var arrwork = [valplayer];
+          $.merge( arrwork, objPlayerPropHistory[valplayer] )
+          arrPlayerPropHistory.push(arrwork);
+        });
+        return arrPlayerPropHistory
       },
       buildPlayerFundsChartData : function () {
         //We're looking to build something that looks like this . 

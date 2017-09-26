@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Example of Bootstrap 3 Three Column Grid Layouts for Tablets (landscape) and Desktops</title>
+    <title>Kotahi Output - V6</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <!-- jQuery -->
@@ -47,32 +47,37 @@
 <body>
     <div class='container'>
         <div class="row">
-            <div>V5</div>
+            <h2>Kotahi Output</h2>
         </div>
         <div class="row">
             <!-- Test of counter incrementation START -->
-            <h2 id="countervalue"></h2>
+            <h3 id="countervalue"></h3>
             <!-- Test of counter incrementation STOP -->
         </div>
 
         <div class="row">
-            <div id="chart"></div>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div id="chartplayerfunds"></div>
+                </div>
+            </div>
         </div>
-
-        <script>
-            //This is where the chart code used to be
-        </script>
+        <div class="row">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div id="chartplayerproperty"></div>
+                </div>
+            </div>
+        </div>
 
         <div class="row">
-            <canvas id="playerfundschart" width="1000" height="1200"></canvas>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <canvas id="boardfacsimile" width="1000" height="1200"></canvas>
+                </div>
+            </div>
         </div>
 
-        <script>
-            //This is where the board build code used to be
-        </script>
-
-
-        <!-- Open the output in a new blank tab (Click the arrow next to "Show Output" button) and resize the browser window to understand how the Bootstrap responsive grid system works. -->
         <div class="row">
             {testrow}
         </div>
