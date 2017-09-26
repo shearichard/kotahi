@@ -18,3 +18,13 @@ Run a local web server in Python 3 like this :
 ```
     python3 -m http.server
 ```
+
+Run the job which actually simulates the game player:
+```
+    python core.py
+```
+
+Run the job which produces the visulisation files:
+```
+python monitormaker.py -i /tmp/tmpnzsw1t1b -o /tmp -t .
+```
